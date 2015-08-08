@@ -6,6 +6,10 @@ if (Meteor.isServer) {
 
 if (Meteor.isClient) {
   Meteor.startup(function() {
+    Tracker.autorun(function () {
+      var geo = Geolocation.latLng();
+      Session.set('geo', geo);
+    });
     GoogleMaps.load();
   });
 
@@ -13,11 +17,12 @@ if (Meteor.isClient) {
 
   Template.map.helpers({
     mapOptions: function() {
+      // debugger
       if (GoogleMaps.loaded()) {
         return {
-          center: new google.maps.LatLng(44.525049, -110.83819),
+          center: new google.maps.LatLng(Session.get('geo').lat, Session.get('geo').lng),
           zoom: 16,
-          mapTypeId: google.maps.MapTypeId.SATELLITE
+          mapTypeId: google.maps.MapTypeId.ROADMAP
         };
       }
     }
